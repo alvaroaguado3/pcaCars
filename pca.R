@@ -10,4 +10,4 @@ names(pcaCars)
 summary(pcaCars)
 
 # Scree plot 
-plot(pcaCars, type = "l")
+plot(pcaCars)
