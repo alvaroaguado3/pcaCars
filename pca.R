@@ -1,13 +1,29 @@
-# cor = TRUE indicates that PCA is performed on 
-# standarized data (mean = 0 , variance = 1 )
+# cluster cars
+carsHC <- hclust(dist(pcaCars$scores), method = "ward.D2")
 
-pcaCars <- princomp(mtcars, cor= TRUE)
+# dendrogram
+plot(carsHC)
 
-# View objects stored in pcaCars
-names(pcaCars)
+# cut the dendrogram into 3 clusters
+carsClusters <- cutree(carsHC, k = 3)
 
-# Proportion of variance explained
-summary(pcaCars)
+# add cluster to data frame of scores
+carsDf <- data.frame(pcaCars$scores, "cluster" = factor(carsClusters))
+str(carsDf)
 
-# Scree plot 
-plot(pcaCars)
+# plot the first 2 PCs with cluster membership
+# need to install ggplot2 and ggrepel packages first
+# using the following command in R: 
+# install.packages(c("ggplot2","ggrepel"))
+library(ggplot2)
+library(ggrepel)
+ggplot(carsDf,aes(x=Comp.1, y=Comp.2)) +
+  geom_text_repel(aes(label = rownames(carsDf))) +
+  theme_classic() +
+  geom_hline(yintercept = 0, color = "gray70") +
+  geom_vline(xintercept = 0, color = "gray70") +
+  geom_point(aes(color = cluster), alpha = 0.55, size = 3) +
+  xlab("PC1") +
+  ylab("PC2") + 
+  xlim(-5, 6) + 
+  ggtitle("PCA plot of Cars")
